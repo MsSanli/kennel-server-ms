@@ -10,10 +10,10 @@ from views import (
     get_all_customers,
     get_single_customer,
 )
-from views.animal_requests import create_animal
-from views.customer_requests import create_customer
-from views.employee_requests import create_employee
-from views.location_requests import create_location
+from views.animal_requests import create_animal, delete_animal
+from views.customer_requests import create_customer, delete_customer
+from views.employee_requests import create_employee, delete_employee
+from views.location_requests import create_location, delete_location
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -156,11 +156,34 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
 
+    def do_DELETE(self):
+        """delete function"""
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            delete_animal(id)
+
+        elif resource == "customers":
+            delete_customer(id)
+
+        elif resource == "employees":
+            delete_employee(id)
+
+        elif resource == "locations":
+            delete_location(id)
+
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
+
     def do_PUT(self):
         """Handles PUT requests to the server
         """
         self.do_POST()
-
 
 # This function is not inside the class. It is the starting
 # point of this application.
