@@ -12,6 +12,7 @@ from views import (
 )
 from views.animal_requests import create_animal
 from views.customer_requests import create_customer
+from views.employee_requests import create_employee
 from views.location_requests import create_location
 
 # Here's a class. It inherits from another class.
