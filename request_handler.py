@@ -10,10 +10,10 @@ from views import (
     get_all_customers,
     get_single_customer,
 )
-from views.animal_requests import create_animal, delete_animal
-from views.customer_requests import create_customer, delete_customer
-from views.employee_requests import create_employee, delete_employee
-from views.location_requests import create_location, delete_location
+from views.animal_requests import create_animal, delete_animal, update_animal
+from views.customer_requests import create_customer, delete_customer, update_customer
+from views.employee_requests import create_employee, delete_employee, update_employee
+from views.location_requests import create_location, delete_location, update_location
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -183,7 +183,26 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_PUT(self):
         """Handles PUT requests to the server
         """
-        self.do_POST()
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            update_animal(id, post_body)
+        elif resource == "customers":
+            update_customer(id, post_body)
+        elif resource == "employees":
+            update_employee(id, post_body)
+        elif resource == "locations":
+            update_location(id, post_body)
+
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
 
 # This function is not inside the class. It is the starting
 # point of this application.
