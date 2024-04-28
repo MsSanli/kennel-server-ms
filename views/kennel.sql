@@ -91,3 +91,5 @@ SELECT
     a.address
 FROM location a
 WHERE a.id = 2
+
+-- moving along ch3
