@@ -1,9 +1,9 @@
 from .animal_requests import (
     get_all_animals,
-    get_single_animal,
     create_animal,
     delete_animal,
-    update_animal
+    update_animal,
+    get_single_animal
 )
 from .location_requests import (
     get_all_locations,
@@ -20,9 +20,9 @@ from .employee_requests import (
     update_employee
 )
 from .customer_requests import (
-    get_all_customers,
-    get_single_customer,
     create_customer,
     delete_customer,
-    update_customer
+    update_customer,
+    get_single_customer,
+    get_all_customers
 )

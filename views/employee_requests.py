@@ -1,3 +1,8 @@
+import json
+import sqlite3
+from models import Employee
+
+
 EMPLOYEES = [
     {
         "id": 1,
@@ -7,20 +12,62 @@ EMPLOYEES = [
 
 def get_all_employees():
     """Return a list of all employees."""
-    return EMPLOYEES
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name
+        FROM employee a
+        """)
+
+        # Initialize an empty list to hold all employee representations
+        employees = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        for row in dataset:
+
+            # Create an employee instance from the current row.
+            # Note that the database fields are specified in
+            # exact order of the parameters defined in the
+            # Employee class above.
+            employee = Employee(row['id'], row['name'])
+
+            employees.append(employee.__dict__) # see the notes below for an explanation on this line of code.
+
+    return employees
+
 
 def get_single_employee(id):
-    """Return the employee with the specified ID."""
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    requested_employee = None
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name
+        FROM employee a
+        WHERE a.id = ?
+        """, ( id, ))
 
-    for employee in EMPLOYEES:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if employee["id"] == id:
-            requested_employee = employee
+        # Load the single result into memory
+        data = db_cursor.fetchone()
 
-    return requested_employee
+        # Create an employee instance from the current row
+        employee = Employee(data['id'], data['name'])
+
+        return employee.__dict__
 
 def create_employee(employee):
     """create new employee"""
