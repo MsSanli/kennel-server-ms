@@ -3,7 +3,9 @@ from .animal_requests import (
     create_animal,
     delete_animal,
     update_animal,
-    get_single_animal
+    get_single_animal,
+    get_animals_by_location,
+    get_animals_by_status
 )
 from .location_requests import (
     get_all_locations,
@@ -24,5 +26,6 @@ from .customer_requests import (
     delete_customer,
     update_customer,
     get_single_customer,
-    get_all_customers
+    get_all_customers,
+    get_customer_by_email
 )
