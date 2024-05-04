@@ -50,29 +50,50 @@ def get_all_locations():
 
     return locations
 
-# Function with a single parameter
 def get_single_location(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Use a ? parameter to inject a variable's value
-        # into the SQL statement.
+        # Fetch location details
         db_cursor.execute("""
-        SELECT
-            a.id,
-            a.address
-        FROM location a
-        WHERE a.id = ?
-        """, ( id, ))
+            SELECT id, address
+            FROM location
+            WHERE id = ?
+        """, (id,))
 
         # Load the single result into memory
-        data = db_cursor.fetchone()
+        location_data = db_cursor.fetchone()
 
-        # Create an animal instance from the current row
-        location = Location(data['id'], data['address'])
+        if location_data:
+            # Fetch employees associated with the location
+            db_cursor.execute("""
+                SELECT id, name
+                FROM employee
+                WHERE location_id = ?
+            """, (id,))
+            employees_data = db_cursor.fetchall()
 
-        return location.__dict__
+            # Fetch animals associated with the location
+            db_cursor.execute("""
+                SELECT id, name
+                FROM animal
+                WHERE location_id = ?
+            """, (id,))
+            animals_data = db_cursor.fetchall()
+
+            # Create a dictionary to store location details, employees, and animals
+            location = {
+                "id": location_data['id'],
+                "address": location_data['address'],
+                "employees": [{"id": employee['id'], "name": employee['name']} for employee in employees_data],
+                "animals": [{"id": animal['id'], "name": animal['name']} for animal in animals_data]
+            }
+
+            return location
+        else:
+            return None
+
 
 def create_location(location):
     """Returns a new location"""

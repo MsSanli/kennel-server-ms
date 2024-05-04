@@ -10,7 +10,6 @@ from .animal_requests import (
 from .location_requests import (
     get_all_locations,
     get_single_location,
-    create_location,
     delete_location,
     update_location
 )
